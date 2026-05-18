@@ -1,41 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forward Deployed Engineers — One Pager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-.page{font-family:'DM Sans',sans-serif;max-width:680px;padding:2rem;background:#ffffff;color:#1a1a1a}
-.header{border-bottom:0.5px solid #e0ddd6;padding-bottom:1.25rem;margin-bottom:1.75rem}
-.eyebrow{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.08em;color:#999490;text-transform:uppercase;margin-bottom:6px}
-.title{font-size:22px;font-weight:500;color:#1a1a1a;line-height:1.2}
-.subtitle{font-size:14px;color:#555;margin-top:6px;line-height:1.6}
-.section{margin-bottom:1.75rem}
-.section-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:#999490;margin-bottom:10px}
-.card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.card{background:#f4f2ed;border-radius:8px;padding:12px 14px}
-.card-tag{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:7px;font-weight:500}
-.tag-fix{background:#FAECE7;color:#993C1D}
-.tag-enhance{background:#E6F1FB;color:#185FA5}
-.tag-optimize{background:#EAF3DE;color:#3B6D11}
-.card-body{font-size:12px;color:#555;line-height:1.55}
-.engage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.engage-card{background:#f4f2ed;border-radius:8px;padding:12px 14px}
-.engage-title{font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
-.engage-body{font-size:12px;color:#555;line-height:1.55}
-.when-list{display:flex;flex-direction:column;gap:8px}
-.when-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#555;line-height:1.5}
-.when-dot{width:6px;height:6px;border-radius:50%;background:#999490;flex-shrink:0;margin-top:6px}
-.contact-row{display:flex;gap:10px;flex-wrap:wrap}
-.contact-pill{display:flex;align-items:center;gap:7px;background:#f4f2ed;border-radius:8px;padding:8px 14px;font-size:12px}
-.contact-label{font-weight:500;color:#1a1a1a}
-.contact-sla{font-family:'DM Mono',monospace;font-size:10px;color:#999490;letter-spacing:0.04em}
-.footnote{font-size:11px;color:#999490;line-height:1.6;border-top:0.5px solid #e0ddd6;padding-top:1rem;margin-top:0.5rem}
-.intake-note{font-size:12px;color:#777;line-height:1.55;margin-bottom:10px}
-.intake-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.intake-card{background:#f4f2ed;border-radius:8px;padding:12px 14px}
-.intake-icon{display:inline-block;font-size:9px;font-family:'DM Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;background:#e8e5de;color:#888;border-radius:4px;padding:2px 7px;margin-bottom:6px;font-weight:500}
-.intake-title{font-size:12px;font-weight:500;color:#1a1a1a;margin-bottom:3px}
-.intake-body{font-size:12px;color:#555;line-height:1.55}
-</style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 1.5rem;
+    }
 
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 0.5px solid #e0ddd6;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      color: #999490;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    /* Sections */
+    .section { margin-bottom: 1.75rem; }
+    .section-label {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999490;
+      margin-bottom: 10px;
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .card {
+      background: #f4f2ed;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 7px;
+      font-weight: 500;
+    }
+    .tag-fix      { background: #FAECE7; color: #993C1D; }
+    .tag-enhance  { background: #E6F1FB; color: #185FA5; }
+    .tag-optimize { background: #EAF3DE; color: #3B6D11; }
+    .card-body { font-size: 12px; color: #555; line-height: 1.55; }
+
+    /* Engage grid */
+    .engage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .engage-card {
+      background: #f4f2ed;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .engage-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+    .engage-body  { font-size: 12px; color: #555; line-height: 1.55; }
+
+    /* When list */
+    .when-list { display: flex; flex-direction: column; gap: 8px; }
+    .when-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .when-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #999490;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* Contact */
+    .contact-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .contact-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #f4f2ed;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+    .contact-label { font-weight: 500; color: #1a1a1a; }
+    .contact-sla {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #999490;
+      letter-spacing: 0.04em;
+    }
+
+    /* Intake */
+    .intake-note { font-size: 12px; color: #777; line-height: 1.55; margin-bottom: 10px; }
+    .intake-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .intake-card { background: #f4f2ed; border-radius: 8px; padding: 12px 14px; }
+    .intake-icon {
+      display: inline-block;
+      font-size: 9px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #e8e5de;
+      color: #888;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .intake-title { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: 3px; }
+    .intake-body  { font-size: 12px; color: #555; line-height: 1.55; }
+
+    /* Footnote */
+    .footnote {
+      font-size: 11px;
+      color: #999490;
+      line-height: 1.6;
+      border-top: 0.5px solid #e0ddd6;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 520px) {
+      body { padding: 1rem; }
+
+      .title { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+
+      /* Single-column grids on mobile */
+      .card-grid,
+      .engage-grid,
+      .intake-grid { grid-template-columns: 1fr; }
+
+      .when-item { font-size: 12px; }
+
+      .contact-row { flex-direction: column; }
+      .contact-pill { width: 100%; }
+    }
+
+    @media (min-width: 521px) and (max-width: 720px) {
+      body { padding: 1.25rem; }
+
+      /* 2-col on small tablets */
+      .card-grid  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .intake-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
 <div class="page">
   <div class="header">
     <div class="eyebrow">Account Management · Sales Org</div>
@@ -165,3 +330,5 @@
 
   <div class="footnote">FDE partners closely with Product to make sure real-world client feedback closes the loop. Every engagement is an opportunity to make the product better. · Work tracked in SFDC as FDE Projects.</div>
 </div>
+</body>
+</html>
