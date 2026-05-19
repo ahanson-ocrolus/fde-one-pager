@@ -85,15 +85,15 @@
     }
     .card { background: #f4f2ed; border-radius: 8px; padding: 12px 14px; }
     .card-tag {
-      display: inline-block;
-      font-size: 10px;
-      font-family: 'DM Mono', monospace;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-bottom: 7px;
+      display: block;
+      font-size: 20px;
+      font-family: 'DM Sans', sans-serif;
       font-weight: 500;
+      letter-spacing: -0.02em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      width: fit-content;
     }
     .tag-fix      { background: #FAECE7; color: #993C1D; }
     .tag-enhance  { background: #E6F1FB; color: #185FA5; }
@@ -260,7 +260,7 @@
     <div class="header">
       <div class="eyebrow">Account Management · Sales Org</div>
       <div class="title">Forward Deployed Engineers</div>
-      <div class="subtitle">Technical experts embedded within the AM team. We bridge the gap between client needs, product capability, and real-world implementation — and we help AMs and clients become more capable through every engagement.</div>
+      <div class="subtitle">Technical experts embedded in the AM team — bridging client needs, product capability, and real-world implementation.</div>
     </div>
   </div>
 
@@ -270,15 +270,15 @@
     <div class="card-grid">
       <div class="card">
         <span class="card-tag tag-fix">Fix</span>
-        <div class="card-body">Diagnose and resolve technical issues affecting a client's implementation or workflow.</div>
+        <div class="card-body">Diagnose and resolve technical issues in a client's implementation.</div>
       </div>
       <div class="card">
         <span class="card-tag tag-enhance">Enhance</span>
-        <div class="card-body">Support implementations, integrations, new feature rollouts, and technical configuration.</div>
+        <div class="card-body">Support integrations, feature rollouts, and technical configuration.</div>
       </div>
       <div class="card">
         <span class="card-tag tag-optimize">Optimize</span>
-        <div class="card-body">Review existing setups, discover underutilization, and design a stronger future state.</div>
+        <div class="card-body">Audit existing setups and design a stronger future state.</div>
       </div>
     </div>
   </div>
@@ -291,19 +291,19 @@
       <div class="engage-grid">
         <div class="engage-card">
           <div class="engage-title">Client on-sites</div>
-          <div class="engage-body">In-person or virtual sessions scoped to Fix, Enhance, or Optimize. Planned and coordinated with the AM.</div>
+          <div class="engage-body">In-person or virtual sessions, scoped and coordinated with the AM.</div>
         </div>
         <div class="engage-card">
           <div class="engage-title">Client &amp; AM calls</div>
-          <div class="engage-body">Implementation kickoffs, technical Q&amp;A, implementation reviews. FDE joins as the technical voice.</div>
+          <div class="engage-body">Kickoffs, technical Q&amp;A, and implementation reviews.</div>
         </div>
         <div class="engage-card">
           <div class="engage-title">Internal support</div>
-          <div class="engage-body">Available via Slack or call for any technical question about a client's environment or Ocrolus capabilities.</div>
+          <div class="engage-body">Slack or call for any technical question about a client or the platform.</div>
         </div>
         <div class="engage-card">
           <div class="engage-title">FDE projects</div>
-          <div class="engage-body">Scoped, tracked work in SFDC that benefits a client, the AM team, or Ocrolus broadly. Logged as FDE Projects.</div>
+          <div class="engage-body">Scoped work tracked in SFDC — for clients, the AM team, or Ocrolus broadly.</div>
         </div>
       </div>
     </div>
@@ -311,11 +311,11 @@
     <div>
       <div class="section-label">When to bring us in</div>
       <div class="when-list">
-        <div class="when-item"><div class="when-dot"></div><span>You're unsure, not confident, or can't find the answer in documentation — FDE is your next call.</span></div>
-        <div class="when-item"><div class="when-dot"></div><span>A client's implementation is stalling, underperforming, or they want to do more with the platform.</span></div>
-        <div class="when-item"><div class="when-dot"></div><span>A renewal or expansion has a technical blocker or an unanswered technical question.</span></div>
-        <div class="when-item"><div class="when-dot"></div><span>You need a technical presence on a client call — kickoff, QBR, or deep-dive.</span></div>
-        <div class="when-item"><div class="when-dot"></div><span>You know <em>something</em> needs to change but aren't sure what — bring us in to scope it together.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>You're unsure or can't find the answer in docs.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A client's implementation is stalling or underperforming.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A renewal or expansion has a technical blocker.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>You need technical presence on a kickoff, QBR, or deep-dive.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span><em>Something</em> needs to change but you're not sure what.</span></div>
       </div>
     </div>
 
@@ -323,7 +323,7 @@
       <div class="section-label">What we're not</div>
       <div class="when-list">
         <div class="when-item"><div class="when-dot"></div><span>A replacement for Support tickets or billing questions.</span></div>
-        <div class="when-item"><div class="when-dot"></div><span>A bottleneck — if you know exactly who and what you need in Product, go direct. We're additive, not mandatory.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A bottleneck — if you know who you need in Product, go direct.</span></div>
       </div>
     </div>
 
@@ -334,37 +334,37 @@
 
     <div>
       <div class="section-label">What we need to help you</div>
-      <div class="intake-note">The more context you share upfront, the faster we can prioritize and show up prepared. Bring as much of this as you have — partial info is fine, none is a blocker.</div>
+      <div class="intake-note">More context = faster response. Partial info is fine — none is a blocker.</div>
       <div class="intake-grid">
         <div class="intake-card">
           <div class="intake-icon">CLIENT</div>
           <div class="intake-title">Client &amp; size</div>
-          <div class="intake-body">Account name, estimated ACV/ARR, and contract tier. Helps us calibrate effort and urgency.</div>
+          <div class="intake-body">Account name, ACV/ARR, and contract tier.</div>
         </div>
         <div class="intake-card">
           <div class="intake-icon">PRIORITY</div>
           <div class="intake-title">Priority level</div>
-          <div class="intake-body">Is this urgent, high, or a when-we-can? A simple signal so we can sequence the queue.</div>
+          <div class="intake-body">Urgent, high, or when-we-can.</div>
         </div>
         <div class="intake-card">
           <div class="intake-icon">TIME</div>
           <div class="intake-title">Timeline</div>
-          <div class="intake-body">Any deadlines, renewal dates, or client-facing milestones we need to work backward from.</div>
+          <div class="intake-body">Deadlines, renewals, or key milestones.</div>
         </div>
         <div class="intake-card">
           <div class="intake-icon">ARR+</div>
           <div class="intake-title">Potential ARR increase</div>
-          <div class="intake-body">Estimated expansion opportunity if the engagement goes well. Helps us size the investment.</div>
+          <div class="intake-body">Estimated expansion if the engagement goes well.</div>
         </div>
         <div class="intake-card">
           <div class="intake-icon">RISK</div>
           <div class="intake-title">Retention risk</div>
-          <div class="intake-body">Is churn or downgrade on the table? Flag it — risk context changes how we prioritize.</div>
+          <div class="intake-body">Churn or downgrade on the table? Flag it.</div>
         </div>
         <div class="intake-card">
           <div class="intake-icon">ASK</div>
           <div class="intake-title">The ask</div>
-          <div class="intake-body">A one-line description of what you need: fix X, unblock Y, scope Z. Even rough is helpful.</div>
+          <div class="intake-body">One line: fix X, unblock Y, scope Z.</div>
         </div>
       </div>
     </div>
@@ -397,7 +397,7 @@
 
   <!-- Footnote (full width) -->
   <div class="page-footnote">
-    <div class="footnote">FDE partners closely with Product to make sure real-world client feedback closes the loop. Every engagement is an opportunity to make the product better. · Work tracked in SFDC as FDE Projects.</div>
+    <div class="footnote">Every engagement feeds back to Product. Work tracked in SFDC as FDE Projects.</div>
   </div>
 
 </div>
