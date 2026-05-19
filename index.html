@@ -14,19 +14,47 @@
       font-family: 'DM Sans', sans-serif;
       background: #ffffff;
       color: #1a1a1a;
-      padding: 1.5rem;
+      min-height: 100dvh;
+      padding: 1.5rem 2rem;
     }
 
+    /* ── Page shell ────────────────────────────────── */
     .page {
-      max-width: 680px;
+      max-width: 1200px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "header"
+        "what-we-do"
+        "col-left"
+        "col-right"
+        "footnote";
+      gap: 1.75rem;
     }
 
-    /* Header */
+    /* On landscape/desktop: switch to 2-column body */
+    @media (min-width: 840px) {
+      .page {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "header      header"
+          "what-we-do  what-we-do"
+          "col-left    col-right"
+          "footnote    footnote";
+      }
+    }
+
+    .page-header   { grid-area: header; }
+    .page-what     { grid-area: what-we-do; }
+    .page-left     { grid-area: col-left;  display: flex; flex-direction: column; gap: 1.75rem; }
+    .page-right    { grid-area: col-right; display: flex; flex-direction: column; gap: 1.75rem; }
+    .page-footnote { grid-area: footnote; }
+
+    /* ── Header ────────────────────────────────────── */
     .header {
       border-bottom: 0.5px solid #e0ddd6;
       padding-bottom: 1.25rem;
-      margin-bottom: 1.75rem;
     }
     .eyebrow {
       font-size: 11px;
@@ -36,21 +64,10 @@
       text-transform: uppercase;
       margin-bottom: 6px;
     }
-    .title {
-      font-size: 22px;
-      font-weight: 500;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-    .subtitle {
-      font-size: 14px;
-      color: #555;
-      margin-top: 6px;
-      line-height: 1.6;
-    }
+    .title { font-size: 22px; font-weight: 500; color: #1a1a1a; line-height: 1.2; }
+    .subtitle { font-size: 14px; color: #555; margin-top: 6px; line-height: 1.6; }
 
-    /* Sections */
-    .section { margin-bottom: 1.75rem; }
+    /* ── Section ───────────────────────────────────── */
     .section-label {
       font-size: 11px;
       font-family: 'DM Mono', monospace;
@@ -60,17 +77,13 @@
       margin-bottom: 10px;
     }
 
-    /* Cards */
+    /* ── What we do cards ──────────────────────────── */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
-    .card {
-      background: #f4f2ed;
-      border-radius: 8px;
-      padding: 12px 14px;
-    }
+    .card { background: #f4f2ed; border-radius: 8px; padding: 12px 14px; }
     .card-tag {
       display: inline-block;
       font-size: 10px;
@@ -87,63 +100,21 @@
     .tag-optimize { background: #EAF3DE; color: #3B6D11; }
     .card-body { font-size: 12px; color: #555; line-height: 1.55; }
 
-    /* Engage grid */
+    /* ── Engage grid ───────────────────────────────── */
     .engage-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
-    .engage-card {
-      background: #f4f2ed;
-      border-radius: 8px;
-      padding: 12px 14px;
-    }
+    .engage-card { background: #f4f2ed; border-radius: 8px; padding: 12px 14px; }
     .engage-title { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
     .engage-body  { font-size: 12px; color: #555; line-height: 1.55; }
 
-    /* When list */
-    .when-list { display: flex; flex-direction: column; gap: 8px; }
-    .when-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 13px;
-      color: #555;
-      line-height: 1.5;
-    }
-    .when-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #999490;
-      flex-shrink: 0;
-      margin-top: 6px;
-    }
-
-    /* Contact */
-    .contact-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .contact-pill {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: #f4f2ed;
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 12px;
-    }
-    .contact-label { font-weight: 500; color: #1a1a1a; }
-    .contact-sla {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: #999490;
-      letter-spacing: 0.04em;
-    }
-
-    /* Intake */
+    /* ── Intake grid ───────────────────────────────── */
     .intake-note { font-size: 12px; color: #777; line-height: 1.55; margin-bottom: 10px; }
     .intake-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
     .intake-card { background: #f4f2ed; border-radius: 8px; padding: 12px 14px; }
@@ -163,52 +134,138 @@
     .intake-title { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: 3px; }
     .intake-body  { font-size: 12px; color: #555; line-height: 1.55; }
 
-    /* Footnote */
+    /* ── When list ─────────────────────────────────── */
+    .when-list { display: flex; flex-direction: column; gap: 8px; }
+    .when-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .when-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #999490;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* ── Contact ───────────────────────────────────── */
+    .contact-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .contact-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #f4f2ed;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      text-decoration: none;
+      color: inherit;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .contact-pill:hover { background: #eae7e0; }
+    .contact-pill:active { transform: scale(0.97); }
+    .contact-label { font-weight: 500; color: #1a1a1a; }
+    .contact-sla {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #999490;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Call modal ────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 28px 20px;
+      max-width: 340px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .modal-body {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .modal-btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .modal-btn:hover { opacity: 0.8; }
+    .modal-cancel { background: #f4f2ed; color: #555; }
+    .modal-confirm { background: #1a1a1a; color: #fff; }
+
+    /* ── Footnote ──────────────────────────────────── */
     .footnote {
       font-size: 11px;
       color: #999490;
       line-height: 1.6;
       border-top: 0.5px solid #e0ddd6;
       padding-top: 1rem;
-      margin-top: 0.5rem;
     }
 
-    /* ── Responsive ─────────────────────────────────── */
-    @media (max-width: 520px) {
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 839px) {
+      /* single col: intake stays 2-col, cards stay 3-col */
+    }
+
+    @media (max-width: 560px) {
       body { padding: 1rem; }
-
-      .title { font-size: 20px; }
+      .title { font-size: 19px; }
       .subtitle { font-size: 13px; }
-
-      /* Single-column grids on mobile */
-      .card-grid,
-      .engage-grid,
+      .card-grid  { grid-template-columns: 1fr; }
+      .engage-grid { grid-template-columns: 1fr; }
       .intake-grid { grid-template-columns: 1fr; }
-
-      .when-item { font-size: 12px; }
-
       .contact-row { flex-direction: column; }
       .contact-pill { width: 100%; }
-    }
-
-    @media (min-width: 521px) and (max-width: 720px) {
-      body { padding: 1.25rem; }
-
-      /* 2-col on small tablets */
-      .card-grid  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .intake-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
 <body>
 <div class="page">
-  <div class="header">
-    <div class="eyebrow">Account Management · Sales Org</div>
-    <div class="title">Forward Deployed Engineers</div>
-    <div class="subtitle">Technical experts embedded within the AM team. We bridge the gap between client needs, product capability, and real-world implementation — and we help AMs and clients become more capable through every engagement.</div>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header">
+      <div class="eyebrow">Account Management · Sales Org</div>
+      <div class="title">Forward Deployed Engineers</div>
+      <div class="subtitle">Technical experts embedded within the AM team. We bridge the gap between client needs, product capability, and real-world implementation — and we help AMs and clients become more capable through every engagement.</div>
+    </div>
   </div>
 
-  <div class="section">
+  <!-- What we do (full width) -->
+  <div class="page-what">
     <div class="section-label">What we do</div>
     <div class="card-grid">
       <div class="card">
@@ -226,109 +283,142 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">How To Engage Us</div>
-    <div class="engage-grid">
-      <div class="engage-card">
-        <div class="engage-title">Client on-sites</div>
-        <div class="engage-body">In-person or virtual sessions scoped to Fix, Enhance, or Optimize. Planned and coordinated with the AM.</div>
-      </div>
-      <div class="engage-card">
-        <div class="engage-title">Client &amp; AM calls</div>
-        <div class="engage-body">Implementation kickoffs, technical Q&amp;A, implementation reviews. FDE joins as the technical voice.</div>
-      </div>
-      <div class="engage-card">
-        <div class="engage-title">Internal support</div>
-        <div class="engage-body">Available via Slack or call for any technical question about a client's environment or Ocrolus capabilities.</div>
-      </div>
-      <div class="engage-card">
-        <div class="engage-title">FDE projects</div>
-        <div class="engage-body">Scoped, tracked work in SFDC that benefits a client, the AM team, or Ocrolus broadly. Logged as FDE Projects.</div>
-      </div>
-    </div>
-  </div>
+  <!-- Left column -->
+  <div class="page-left">
 
-  <div class="section">
-    <div class="section-label">What we need to help you</div>
-    <div class="intake-note">The more context you share upfront, the faster we can prioritize and show up prepared. Bring as much of this as you have — partial info is fine, none is a blocker.</div>
-    <div class="intake-grid">
-      <div class="intake-card">
-        <div class="intake-icon">CLIENT</div>
-        <div class="intake-title">Client &amp; size</div>
-        <div class="intake-body">Account name, estimated ACV/ARR, and contract tier. Helps us calibrate effort and urgency.</div>
-      </div>
-      <div class="intake-card">
-        <div class="intake-icon">PRIORITY</div>
-        <div class="intake-title">Priority level</div>
-        <div class="intake-body">Is this urgent, high, or a when-we-can? A simple signal so we can sequence the queue.</div>
-      </div>
-      <div class="intake-card">
-        <div class="intake-icon">TIME</div>
-        <div class="intake-title">Timeline</div>
-        <div class="intake-body">Any deadlines, renewal dates, or client-facing milestones we need to work backward from.</div>
-      </div>
-      <div class="intake-card">
-        <div class="intake-icon">ARR+</div>
-        <div class="intake-title">Potential ARR increase</div>
-        <div class="intake-body">Estimated expansion opportunity if the engagement goes well. Helps us size the investment.</div>
-      </div>
-      <div class="intake-card">
-        <div class="intake-icon">RISK</div>
-        <div class="intake-title">Retention risk</div>
-        <div class="intake-body">Is churn or downgrade on the table? Flag it — risk context changes how we prioritize.</div>
-      </div>
-      <div class="intake-card">
-        <div class="intake-icon">ASK</div>
-        <div class="intake-title">The ask</div>
-        <div class="intake-body">A one-line description of what you need: fix X, unblock Y, scope Z. Even rough is helpful.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label">When to bring us in</div>
-    <div class="when-list">
-      <div class="when-item"><div class="when-dot"></div><span>You're unsure, not confident, or can't find the answer in documentation — FDE is your next call.</span></div>
-      <div class="when-item"><div class="when-dot"></div><span>A client's implementation is stalling, underperforming, or they want to do more with the platform.</span></div>
-      <div class="when-item"><div class="when-dot"></div><span>A renewal or expansion has a technical blocker or an unanswered technical question.</span></div>
-      <div class="when-item"><div class="when-dot"></div><span>You need a technical presence on a client call — kickoff, QBR, or deep-dive.</span></div>
-      <div class="when-item"><div class="when-dot"></div><span>You know <em>something</em> needs to change but aren't sure what — bring us in to scope it together.</span></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label">What we're not</div>
-    <div class="when-list">
-      <div class="when-item"><div class="when-dot"></div><span>A replacement for Support tickets or billing questions.</span></div>
-      <div class="when-item"><div class="when-dot"></div><span>A bottleneck — if you know exactly who and what you need in Product, go direct. We're additive, not mandatory.</span></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label">How to reach us</div>
-    <div class="contact-row">
-      <div class="contact-pill">
-        <div>
-          <div class="contact-label">Slack</div>
-          <div class="contact-sla">24-hr SLA</div>
+    <div>
+      <div class="section-label">How To Engage Us</div>
+      <div class="engage-grid">
+        <div class="engage-card">
+          <div class="engage-title">Client on-sites</div>
+          <div class="engage-body">In-person or virtual sessions scoped to Fix, Enhance, or Optimize. Planned and coordinated with the AM.</div>
         </div>
-      </div>
-      <div class="contact-pill">
-        <div>
-          <div class="contact-label">Email</div>
-          <div class="contact-sla">48–72 hr SLA</div>
+        <div class="engage-card">
+          <div class="engage-title">Client &amp; AM calls</div>
+          <div class="engage-body">Implementation kickoffs, technical Q&amp;A, implementation reviews. FDE joins as the technical voice.</div>
         </div>
-      </div>
-      <div class="contact-pill">
-        <div>
-          <div class="contact-label">Call / text</div>
-          <div class="contact-sla">Urgent only — ASAP response</div>
+        <div class="engage-card">
+          <div class="engage-title">Internal support</div>
+          <div class="engage-body">Available via Slack or call for any technical question about a client's environment or Ocrolus capabilities.</div>
+        </div>
+        <div class="engage-card">
+          <div class="engage-title">FDE projects</div>
+          <div class="engage-body">Scoped, tracked work in SFDC that benefits a client, the AM team, or Ocrolus broadly. Logged as FDE Projects.</div>
         </div>
       </div>
     </div>
+
+    <div>
+      <div class="section-label">When to bring us in</div>
+      <div class="when-list">
+        <div class="when-item"><div class="when-dot"></div><span>You're unsure, not confident, or can't find the answer in documentation — FDE is your next call.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A client's implementation is stalling, underperforming, or they want to do more with the platform.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A renewal or expansion has a technical blocker or an unanswered technical question.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>You need a technical presence on a client call — kickoff, QBR, or deep-dive.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>You know <em>something</em> needs to change but aren't sure what — bring us in to scope it together.</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">What we're not</div>
+      <div class="when-list">
+        <div class="when-item"><div class="when-dot"></div><span>A replacement for Support tickets or billing questions.</span></div>
+        <div class="when-item"><div class="when-dot"></div><span>A bottleneck — if you know exactly who and what you need in Product, go direct. We're additive, not mandatory.</span></div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="footnote">FDE partners closely with Product to make sure real-world client feedback closes the loop. Every engagement is an opportunity to make the product better. · Work tracked in SFDC as FDE Projects.</div>
+  <!-- Right column -->
+  <div class="page-right">
+
+    <div>
+      <div class="section-label">What we need to help you</div>
+      <div class="intake-note">The more context you share upfront, the faster we can prioritize and show up prepared. Bring as much of this as you have — partial info is fine, none is a blocker.</div>
+      <div class="intake-grid">
+        <div class="intake-card">
+          <div class="intake-icon">CLIENT</div>
+          <div class="intake-title">Client &amp; size</div>
+          <div class="intake-body">Account name, estimated ACV/ARR, and contract tier. Helps us calibrate effort and urgency.</div>
+        </div>
+        <div class="intake-card">
+          <div class="intake-icon">PRIORITY</div>
+          <div class="intake-title">Priority level</div>
+          <div class="intake-body">Is this urgent, high, or a when-we-can? A simple signal so we can sequence the queue.</div>
+        </div>
+        <div class="intake-card">
+          <div class="intake-icon">TIME</div>
+          <div class="intake-title">Timeline</div>
+          <div class="intake-body">Any deadlines, renewal dates, or client-facing milestones we need to work backward from.</div>
+        </div>
+        <div class="intake-card">
+          <div class="intake-icon">ARR+</div>
+          <div class="intake-title">Potential ARR increase</div>
+          <div class="intake-body">Estimated expansion opportunity if the engagement goes well. Helps us size the investment.</div>
+        </div>
+        <div class="intake-card">
+          <div class="intake-icon">RISK</div>
+          <div class="intake-title">Retention risk</div>
+          <div class="intake-body">Is churn or downgrade on the table? Flag it — risk context changes how we prioritize.</div>
+        </div>
+        <div class="intake-card">
+          <div class="intake-icon">ASK</div>
+          <div class="intake-title">The ask</div>
+          <div class="intake-body">A one-line description of what you need: fix X, unblock Y, scope Z. Even rough is helpful.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">How to reach us</div>
+      <div class="contact-row">
+        <a class="contact-pill" href="https://slack.com/app_redirect?channel=U0A65V8CGT1">
+          <div>
+            <div class="contact-label">Slack</div>
+            <div class="contact-sla">24-hr SLA</div>
+          </div>
+        </a>
+        <div class="contact-pill">
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-sla">48–72 hr SLA</div>
+          </div>
+        </div>
+        <button class="contact-pill" onclick="document.getElementById('call-modal').classList.add('open')">
+          <div>
+            <div class="contact-label">Call / text</div>
+            <div class="contact-sla">Urgent only — ASAP response</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footnote (full width) -->
+  <div class="page-footnote">
+    <div class="footnote">FDE partners closely with Product to make sure real-world client feedback closes the loop. Every engagement is an opportunity to make the product better. · Work tracked in SFDC as FDE Projects.</div>
+  </div>
+
 </div>
+
+<!-- Call confirmation modal -->
+<div class="modal-overlay" id="call-modal">
+  <div class="modal">
+    <div class="modal-title">Open phone?</div>
+    <div class="modal-body">This will dial Adam's number. Only use for urgent issues that can't wait for Slack or email.</div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" onclick="document.getElementById('call-modal').classList.remove('open')">Cancel</button>
+      <a class="modal-btn modal-confirm" href="tel:+1XXXXXXXXXX" onclick="document.getElementById('call-modal').classList.remove('open')">Call / text</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Close modal on overlay click
+  document.getElementById('call-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+</script>
 </body>
 </html>
