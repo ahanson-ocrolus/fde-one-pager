@@ -7,14 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Google Analytics — replace G-XXXXXXXXXX with your Measurement ID -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -371,6 +363,20 @@
     .modal-btn-slack { background: #E6F1FB; color: #185FA5; }
     .modal-btn-email { background: #1a1a1a; color: #fff; }
 
+    /* ── Stats bar ─────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: #bbb8b2;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+    }
+    .stats-bar span { display: flex; align-items: center; gap: 4px; }
+    .stat-val { color: #999490; font-weight: 500; }
+
     /* ── Footnote ──────────────────────────────────── */
     .footnote {
       font-size: 11px;
@@ -580,6 +586,11 @@
   <!-- Footnote (full width) -->
   <div class="page-footnote">
     <div class="footnote">Every engagement feeds back to Product. Work tracked in SFDC as FDE Projects.</div>
+    <div class="stats-bar">
+      <span>👁 <span class="stat-val" id="stat-views">0</span> views</span>
+      <span>🖱 <span class="stat-val" id="stat-requests">0</span> requests</span>
+      <span>💬 <span class="stat-val" id="stat-feedback">0</span> feedback</span>
+    </div>
   </div>
 
 </div>
@@ -773,16 +784,36 @@
     closeFeedbackModal();
   }
 
-  // ── Analytics: track button clicks ───────────────
-  document.querySelectorAll('.contact-pill, .request-btn, .feedback-fab').forEach(el => {
-    el.addEventListener('click', () => {
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'click', {
-          event_category: 'engagement',
-          event_label: el.textContent.trim().slice(0, 40),
-        });
-      }
-    });
+  // ── Counters (localStorage) ───────────────────────
+  const Counter = {
+    get(key) { return parseInt(localStorage.getItem('fde_' + key) || '0'); },
+    inc(key) {
+      const v = this.get(key) + 1;
+      localStorage.setItem('fde_' + key, v);
+      return v;
+    },
+  };
+
+  function refreshStats() {
+    document.getElementById('stat-views').textContent    = Counter.get('views');
+    document.getElementById('stat-requests').textContent = Counter.get('requests');
+    document.getElementById('stat-feedback').textContent = Counter.get('feedback');
+  }
+
+  // Count this page view
+  Counter.inc('views');
+  refreshStats();
+
+  // Count request button clicks
+  document.querySelector('.request-btn').addEventListener('click', () => {
+    Counter.inc('requests');
+    refreshStats();
+  });
+
+  // Count feedback FAB clicks
+  document.querySelector('.feedback-fab').addEventListener('click', () => {
+    Counter.inc('feedback');
+    refreshStats();
   });
 </script>
 </body>
