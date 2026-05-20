@@ -271,6 +271,49 @@
     .modal-cancel { background: #f4f2ed; color: #555; }
     .modal-confirm { background: #1a1a1a; color: #fff; }
 
+    /* ── Intake form modal ─────────────────────────── */
+    .form-modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 28px 20px;
+      max-width: 480px;
+      width: 95%;
+      max-height: 90dvh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    }
+    .form-modal-header { margin-bottom: 20px; }
+    .form-modal-title { font-size: 16px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+    .form-modal-sub { font-size: 12px; color: #777; line-height: 1.5; }
+    .form-field { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #999490;
+      margin-bottom: 5px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+      background: #f4f2ed;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 8px 11px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: #bbb8b2;
+      background: #fff;
+    }
+    .form-textarea { resize: vertical; min-height: 72px; }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
     /* ── Footnote ──────────────────────────────────── */
     .footnote {
       font-size: 11px;
@@ -374,7 +417,7 @@
         </div>
       </div>
       <div class="request-btn-row">
-        <button class="request-btn" onclick="alert('Form coming soon!')">
+        <button class="request-btn" onclick="document.getElementById('intake-modal').classList.add('open')">
           <span class="request-btn-icon">+</span> Request FDE support
         </button>
       </div>
@@ -484,6 +527,61 @@
 
 </div>
 
+<!-- FDE Support intake modal -->
+<div class="modal-overlay" id="intake-modal">
+  <div class="form-modal">
+    <div class="form-modal-header">
+      <div class="form-modal-title">Request FDE support</div>
+      <div class="form-modal-sub">Share what you know — partial info is fine. We'll follow up to fill in any gaps.</div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-client">Client &amp; size</label>
+      <input class="form-input" id="f-client" type="text" placeholder="Account name, ACV/ARR, contract tier">
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-priority">Priority level</label>
+      <select class="form-select" id="f-priority">
+        <option value="" disabled selected>Select priority</option>
+        <option>Urgent</option>
+        <option>High</option>
+        <option>When-we-can</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-timeline">Timeline</label>
+      <input class="form-input" id="f-timeline" type="text" placeholder="Deadlines, renewals, or key milestones">
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-arr">Potential ARR increase</label>
+      <input class="form-input" id="f-arr" type="text" placeholder="Estimated expansion if the engagement goes well">
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-risk">Retention risk</label>
+      <select class="form-select" id="f-risk">
+        <option value="" disabled selected>Select risk level</option>
+        <option>Yes — churn or downgrade is on the table</option>
+        <option>No</option>
+        <option>Unsure</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="f-ask">The ask</label>
+      <textarea class="form-textarea" id="f-ask" placeholder="One line: fix X, unblock Y, scope Z"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" onclick="closeIntakeModal()">Cancel</button>
+      <button class="modal-btn modal-confirm" onclick="submitIntakeForm()">Submit request</button>
+    </div>
+  </div>
+</div>
+
 <!-- Call confirmation modal -->
 <div class="modal-overlay" id="call-modal">
   <div class="modal">
@@ -497,10 +595,45 @@
 </div>
 
 <script>
-  // Close modal on overlay click
+  // ── Call modal ───────────────────────────────────
   document.getElementById('call-modal').addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('open');
   });
+
+  // ── Intake modal ─────────────────────────────────
+  document.getElementById('intake-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeIntakeModal();
+  });
+
+  function closeIntakeModal() {
+    document.getElementById('intake-modal').classList.remove('open');
+  }
+
+  function submitIntakeForm() {
+    // TODO: Replace FORM_ID and entry.XXXXXXXXX values with real Google Form IDs
+    const FORM_ID = 'YOUR_GOOGLE_FORM_ID';
+    const ENTRY = {
+      client:   'entry.PLACEHOLDER_1',
+      priority: 'entry.PLACEHOLDER_2',
+      timeline: 'entry.PLACEHOLDER_3',
+      arr:      'entry.PLACEHOLDER_4',
+      risk:     'entry.PLACEHOLDER_5',
+      ask:      'entry.PLACEHOLDER_6',
+    };
+
+    const params = new URLSearchParams({
+      [ENTRY.client]:   document.getElementById('f-client').value,
+      [ENTRY.priority]: document.getElementById('f-priority').value,
+      [ENTRY.timeline]: document.getElementById('f-timeline').value,
+      [ENTRY.arr]:      document.getElementById('f-arr').value,
+      [ENTRY.risk]:     document.getElementById('f-risk').value,
+      [ENTRY.ask]:      document.getElementById('f-ask').value,
+    });
+
+    const url = `https://docs.google.com/forms/d/${FORM_ID}/viewform?${params.toString()}`;
+    window.open(url, '_blank');
+    closeIntakeModal();
+  }
 </script>
 </body>
 </html>
