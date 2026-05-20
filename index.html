@@ -123,6 +123,28 @@
       line-height: 1.2;
     }
 
+    /* ── Request button ───────────────────────────── */
+    .request-btn-row { margin-top: 10px; }
+    .request-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #1a1a1a;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .request-btn:hover { opacity: 0.85; }
+    .request-btn:active { transform: scale(0.97); }
+    .request-btn-icon { font-size: 14px; font-weight: 400; line-height: 1; }
+
     /* ── Engage grid ───────────────────────────────── */
     .engage-grid {
       display: grid;
@@ -290,7 +312,7 @@
   <!-- Preparation (full width) -->
   <div class="page-what">
     <div class="section-label">Preparation</div>
-    <div class="section-subtitle">Are you working on fixing something, implementing a value-adding feature, or finding out what's the next best step?</div>
+    <div class="section-subtitle">Are we fixing a problem, implementing a value-adding feature, or finding out what's the next best step?</div>
     <div class="card-grid">
       <div class="card">
         <span class="card-tag tag-fix">Fix</span>
@@ -350,6 +372,11 @@
           <div class="engage-title">FDE projects</div>
           <div class="engage-body">Scoped work tracked in SFDC — for clients, the AM team, or Ocrolus broadly.</div>
         </div>
+      </div>
+      <div class="request-btn-row">
+        <button class="request-btn" onclick="alert('Form coming soon!')">
+          <span class="request-btn-icon">+</span> Request FDE support
+        </button>
       </div>
     </div>
 
