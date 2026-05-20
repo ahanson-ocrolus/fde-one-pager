@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Google Analytics — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -314,6 +322,55 @@
     .form-textarea { resize: vertical; min-height: 72px; }
     .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
+    /* ── Toast ────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 300;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Feedback FAB ──────────────────────────────── */
+    .feedback-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #555;
+      background: #f4f2ed;
+      border: none;
+      border-radius: 20px;
+      padding: 9px 15px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+    }
+    .feedback-fab:hover { background: #eae7e0; box-shadow: 0 4px 16px rgba(0,0,0,0.14); }
+    .feedback-fab:active { transform: scale(0.97); }
+
+    /* ── Intake form send buttons ──────────────────── */
+    .modal-send-row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .modal-btn-slack { background: #E6F1FB; color: #185FA5; }
+    .modal-btn-email { background: #1a1a1a; color: #fff; }
+
     /* ── Footnote ──────────────────────────────────── */
     .footnote {
       font-size: 11px;
@@ -575,9 +632,38 @@
       <textarea class="form-textarea" id="f-ask" placeholder="One line: fix X, unblock Y, scope Z"></textarea>
     </div>
 
-    <div class="modal-actions">
+    <div class="modal-send-row">
       <button class="modal-btn modal-cancel" onclick="closeIntakeModal()">Cancel</button>
-      <button class="modal-btn modal-confirm" onclick="submitIntakeForm()">Submit request</button>
+      <button class="modal-btn modal-btn-slack" onclick="sendIntakeViaSlack()">💬 Send via Slack</button>
+      <button class="modal-btn modal-btn-email" onclick="sendIntakeViaEmail()">✉ Send via Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating feedback button -->
+<button class="feedback-fab" onclick="document.getElementById('feedback-modal').classList.add('open')">
+  💬 Anonymous feedback
+</button>
+
+<!-- Feedback modal -->
+<div class="modal-overlay" id="feedback-modal">
+  <div class="form-modal" style="max-width:400px">
+    <div class="form-modal-header">
+      <div class="form-modal-title">Leave feedback</div>
+      <div class="form-modal-sub">Anonymous — your name won't be attached. Helps us improve how FDE operates.</div>
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="fb-working">What's working?</label>
+      <textarea class="form-textarea" id="fb-working" placeholder="What's been useful or effective?"></textarea>
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="fb-improve">What could be better?</label>
+      <textarea class="form-textarea" id="fb-improve" placeholder="What's missing, unclear, or frustrating?"></textarea>
+    </div>
+    <div class="modal-send-row">
+      <button class="modal-btn modal-cancel" onclick="closeFeedbackModal()">Cancel</button>
+      <button class="modal-btn modal-btn-slack" onclick="sendFeedbackViaSlack()">💬 Share in Slack</button>
+      <button class="modal-btn modal-btn-email" onclick="sendFeedbackViaEmail()">✉ Send via Email</button>
     </div>
   </div>
 </div>
@@ -594,46 +680,110 @@
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-  // ── Call modal ───────────────────────────────────
-  document.getElementById('call-modal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
+  // ── Toast ─────────────────────────────────────────
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  // ── Close on overlay click ────────────────────────
+  ['call-modal','intake-modal','feedback-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
   });
 
-  // ── Intake modal ─────────────────────────────────
-  document.getElementById('intake-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeIntakeModal();
-  });
-
+  // ── Intake modal ──────────────────────────────────
   function closeIntakeModal() {
     document.getElementById('intake-modal').classList.remove('open');
   }
 
-  function submitIntakeForm() {
-    // TODO: Replace FORM_ID and entry.XXXXXXXXX values with real Google Form IDs
-    const FORM_ID = 'YOUR_GOOGLE_FORM_ID';
-    const ENTRY = {
-      client:   'entry.PLACEHOLDER_1',
-      priority: 'entry.PLACEHOLDER_2',
-      timeline: 'entry.PLACEHOLDER_3',
-      arr:      'entry.PLACEHOLDER_4',
-      risk:     'entry.PLACEHOLDER_5',
-      ask:      'entry.PLACEHOLDER_6',
-    };
+  function buildIntakeMessage() {
+    const v = id => document.getElementById(id).value.trim() || '—';
+    return [
+      '🛠 FDE Support Request',
+      '',
+      `Client & size: ${v('f-client')}`,
+      `Priority:      ${v('f-priority')}`,
+      `Timeline:      ${v('f-timeline')}`,
+      `Potential ARR: ${v('f-arr')}`,
+      `Risk:          ${v('f-risk')}`,
+      '',
+      `The ask: ${v('f-ask')}`,
+    ].join('\n');
+  }
 
-    const params = new URLSearchParams({
-      [ENTRY.client]:   document.getElementById('f-client').value,
-      [ENTRY.priority]: document.getElementById('f-priority').value,
-      [ENTRY.timeline]: document.getElementById('f-timeline').value,
-      [ENTRY.arr]:      document.getElementById('f-arr').value,
-      [ENTRY.risk]:     document.getElementById('f-risk').value,
-      [ENTRY.ask]:      document.getElementById('f-ask').value,
+  function sendIntakeViaSlack() {
+    const msg = buildIntakeMessage();
+    navigator.clipboard.writeText(msg).then(() => {
+      closeIntakeModal();
+      showToast('Copied! Open Slack and paste.');
+      setTimeout(() => {
+        window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
+      }, 600);
     });
+  }
 
-    const url = `https://docs.google.com/forms/d/${FORM_ID}/viewform?${params.toString()}`;
-    window.open(url, '_blank');
+  function sendIntakeViaEmail() {
+    const msg = buildIntakeMessage();
+    const subject = encodeURIComponent('FDE Support Request');
+    const body = encodeURIComponent(msg);
+    window.open(`mailto:ahanson@ocrolus.com?subject=${subject}&body=${body}`);
     closeIntakeModal();
   }
+
+  // ── Feedback modal ────────────────────────────────
+  function closeFeedbackModal() {
+    document.getElementById('feedback-modal').classList.remove('open');
+  }
+
+  function buildFeedbackMessage() {
+    const working = document.getElementById('fb-working').value.trim() || '—';
+    const improve = document.getElementById('fb-improve').value.trim() || '—';
+    return [
+      '💬 Anonymous FDE Feedback',
+      '',
+      `What's working:\n${working}`,
+      '',
+      `What could be better:\n${improve}`,
+    ].join('\n');
+  }
+
+  function sendFeedbackViaSlack() {
+    const msg = buildFeedbackMessage();
+    navigator.clipboard.writeText(msg).then(() => {
+      closeFeedbackModal();
+      showToast('Copied! Paste it in Slack.');
+      setTimeout(() => {
+        window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
+      }, 600);
+    });
+  }
+
+  function sendFeedbackViaEmail() {
+    const msg = buildFeedbackMessage();
+    const subject = encodeURIComponent('FDE Feedback');
+    const body = encodeURIComponent(msg);
+    window.open(`mailto:ahanson@ocrolus.com?subject=${subject}&body=${body}`);
+    closeFeedbackModal();
+  }
+
+  // ── Analytics: track button clicks ───────────────
+  document.querySelectorAll('.contact-pill, .request-btn, .feedback-fab').forEach(el => {
+    el.addEventListener('click', () => {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'click', {
+          event_category: 'engagement',
+          event_label: el.textContent.trim().slice(0, 40),
+        });
+      }
+    });
+  });
 </script>
 </body>
 </html>
