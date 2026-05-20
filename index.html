@@ -363,19 +363,42 @@
     .modal-btn-slack { background: #E6F1FB; color: #185FA5; }
     .modal-btn-email { background: #1a1a1a; color: #fff; }
 
-    /* ── Stats bar ─────────────────────────────────── */
-    .stats-bar {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      color: #bbb8b2;
-      letter-spacing: 0.04em;
-      margin-top: 8px;
+    /* ── Admin panel ───────────────────────────────── */
+    .admin-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
     }
-    .stats-bar span { display: flex; align-items: center; gap: 4px; }
-    .stat-val { color: #999490; font-weight: 500; }
+    .admin-overlay.open { display: flex; }
+    .admin-panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      max-width: 480px;
+      width: 95%;
+      max-height: 85dvh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .admin-title { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+    .admin-close { font-size: 18px; color: #999; background: none; border: none; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
+    .admin-close:hover { background: #f4f2ed; }
+    .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .admin-stat { background: #f4f2ed; border-radius: 8px; padding: 14px; text-align: center; }
+    .admin-stat-val { font-size: 28px; font-weight: 500; color: #1a1a1a; line-height: 1; margin-bottom: 4px; }
+    .admin-stat-label { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #999490; }
+    .admin-log-label { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #999490; margin-bottom: 8px; }
+    .admin-log { display: flex; flex-direction: column; gap: 4px; max-height: 240px; overflow-y: auto; }
+    .admin-log-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 10px; border-radius: 6px; background: #f4f2ed; }
+    .admin-log-type { color: #1a1a1a; font-weight: 500; }
+    .admin-log-time { color: #999490; font-family: 'DM Mono', monospace; font-size: 10px; }
+    .admin-empty { font-size: 12px; color: #bbb; text-align: center; padding: 20px 0; }
+    .admin-note { font-size: 11px; color: #bbb8b2; margin-top: 14px; line-height: 1.5; }
 
     /* ── Footnote ──────────────────────────────────── */
     .footnote {
@@ -586,11 +609,6 @@
   <!-- Footnote (full width) -->
   <div class="page-footnote">
     <div class="footnote">Every engagement feeds back to Product. Work tracked in SFDC as FDE Projects.</div>
-    <div class="stats-bar">
-      <span>👁 <span class="stat-val" id="stat-views">0</span> views</span>
-      <span>🖱 <span class="stat-val" id="stat-requests">0</span> requests</span>
-      <span>💬 <span class="stat-val" id="stat-feedback">0</span> feedback</span>
-    </div>
   </div>
 
 </div>
@@ -651,6 +669,35 @@
   </div>
 </div>
 
+<!-- Admin panel (open via ?admin in URL) -->
+<div class="admin-overlay" id="admin-panel">
+  <div class="admin-panel">
+    <div class="admin-header">
+      <div class="admin-title">FDE One-Pager · Activity</div>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="admin-stats">
+      <div class="admin-stat">
+        <div class="admin-stat-val" id="admin-views">—</div>
+        <div class="admin-stat-label">Page views</div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-val" id="admin-requests">—</div>
+        <div class="admin-stat-label">Requests</div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-val" id="admin-feedback">—</div>
+        <div class="admin-stat-label">Feedback</div>
+      </div>
+    </div>
+    <div class="admin-log-label">Recent activity</div>
+    <div class="admin-log" id="admin-log">
+      <div class="admin-empty">Loading…</div>
+    </div>
+    <div class="admin-note">Access this panel at any time by adding <code>?admin</code> to the URL.</div>
+  </div>
+</div>
+
 <!-- Floating feedback button -->
 <button class="feedback-fab" onclick="document.getElementById('feedback-modal').classList.add('open')">
   💬 Anonymous feedback
@@ -694,6 +741,77 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ── Supabase config (swap in your values) ─────────
+  const SB_URL    = 'YOUR_SUPABASE_PROJECT_URL';   // e.g. https://xxxx.supabase.co
+  const SB_KEY    = 'YOUR_SUPABASE_ANON_KEY';
+
+  async function trackEvent(type) {
+    if (SB_URL.startsWith('YOUR_')) return; // not configured yet
+    try {
+      await fetch(`${SB_URL}/rest/v1/fde_events`, {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': `Bearer ${SB_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({ event_type: type }),
+      });
+    } catch (e) { /* silent fail */ }
+  }
+
+  async function loadAdminStats() {
+    if (SB_URL.startsWith('YOUR_')) {
+      document.getElementById('admin-log').innerHTML =
+        '<div class="admin-empty">Supabase not configured yet.</div>';
+      ['admin-views','admin-requests','admin-feedback'].forEach(id =>
+        document.getElementById(id).textContent = '—');
+      return;
+    }
+    try {
+      const res  = await fetch(
+        `${SB_URL}/rest/v1/fde_events?select=event_type,created_at&order=created_at.desc`,
+        { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
+      );
+      const rows = await res.json();
+
+      const count = type => rows.filter(r => r.event_type === type).length;
+      document.getElementById('admin-views').textContent    = count('page_view');
+      document.getElementById('admin-requests').textContent = count('request_click');
+      document.getElementById('admin-feedback').textContent = count('feedback_click');
+
+      const log = document.getElementById('admin-log');
+      if (!rows.length) {
+        log.innerHTML = '<div class="admin-empty">No events yet.</div>';
+        return;
+      }
+      const labels = { page_view: '👁 Page view', request_click: '🖱 Support request', feedback_click: '💬 Feedback' };
+      log.innerHTML = rows.slice(0, 50).map(r => {
+        const d = new Date(r.created_at);
+        const time = d.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+                   + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+        return `<div class="admin-log-item">
+          <span class="admin-log-type">${labels[r.event_type] || r.event_type}</span>
+          <span class="admin-log-time">${time}</span>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      document.getElementById('admin-log').innerHTML =
+        '<div class="admin-empty">Could not load data.</div>';
+    }
+  }
+
+  // ── Admin panel ───────────────────────────────────
+  function closeAdmin() {
+    document.getElementById('admin-panel').classList.remove('open');
+    history.replaceState(null,'', location.pathname);
+  }
+  if (new URLSearchParams(location.search).has('admin')) {
+    document.getElementById('admin-panel').classList.add('open');
+    loadAdminStats();
+  }
+
   // ── Toast ─────────────────────────────────────────
   function showToast(msg, duration = 3000) {
     const t = document.getElementById('toast');
@@ -703,9 +821,12 @@
   }
 
   // ── Close on overlay click ────────────────────────
-  ['call-modal','intake-modal','feedback-modal'].forEach(id => {
+  ['call-modal','intake-modal','feedback-modal','admin-panel'].forEach(id => {
     document.getElementById(id).addEventListener('click', function(e) {
-      if (e.target === this) this.classList.remove('open');
+      if (e.target === this) {
+        this.classList.remove('open');
+        if (id === 'admin-panel') history.replaceState(null,'', location.pathname);
+      }
     });
   });
 
@@ -733,10 +854,9 @@
     const msg = buildIntakeMessage();
     navigator.clipboard.writeText(msg).then(() => {
       closeIntakeModal();
+      trackEvent('request_click');
       showToast('Copied! Open Slack and paste.');
-      setTimeout(() => {
-        window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
-      }, 600);
+      setTimeout(() => window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1','_blank'), 600);
     });
   }
 
@@ -745,6 +865,7 @@
     const subject = encodeURIComponent('FDE Support Request');
     const body = encodeURIComponent(msg);
     window.open(`mailto:ahanson@ocrolus.com?subject=${subject}&body=${body}`);
+    trackEvent('request_click');
     closeIntakeModal();
   }
 
@@ -769,10 +890,9 @@
     const msg = buildFeedbackMessage();
     navigator.clipboard.writeText(msg).then(() => {
       closeFeedbackModal();
+      trackEvent('feedback_click');
       showToast('Copied! Paste it in Slack.');
-      setTimeout(() => {
-        window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
-      }, 600);
+      setTimeout(() => window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1','_blank'), 600);
     });
   }
 
@@ -781,40 +901,12 @@
     const subject = encodeURIComponent('FDE Feedback');
     const body = encodeURIComponent(msg);
     window.open(`mailto:ahanson@ocrolus.com?subject=${subject}&body=${body}`);
+    trackEvent('feedback_click');
     closeFeedbackModal();
   }
 
-  // ── Counters (localStorage) ───────────────────────
-  const Counter = {
-    get(key) { return parseInt(localStorage.getItem('fde_' + key) || '0'); },
-    inc(key) {
-      const v = this.get(key) + 1;
-      localStorage.setItem('fde_' + key, v);
-      return v;
-    },
-  };
-
-  function refreshStats() {
-    document.getElementById('stat-views').textContent    = Counter.get('views');
-    document.getElementById('stat-requests').textContent = Counter.get('requests');
-    document.getElementById('stat-feedback').textContent = Counter.get('feedback');
-  }
-
-  // Count this page view
-  Counter.inc('views');
-  refreshStats();
-
-  // Count request button clicks
-  document.querySelector('.request-btn').addEventListener('click', () => {
-    Counter.inc('requests');
-    refreshStats();
-  });
-
-  // Count feedback FAB clicks
-  document.querySelector('.feedback-fab').addEventListener('click', () => {
-    Counter.inc('feedback');
-    refreshStats();
-  });
+  // ── Track page view ───────────────────────────────
+  trackEvent('page_view');
 </script>
 </body>
 </html>
