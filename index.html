@@ -602,7 +602,7 @@
 
     <div class="form-field">
       <label class="form-label" for="f-timeline">Timeline</label>
-      <input class="form-input" id="f-timeline" type="text" placeholder="Deadlines, renewals, or key milestones">
+      <input class="form-input" id="f-timeline" type="date">
     </div>
 
     <div class="form-field">
@@ -698,12 +698,16 @@
 
   function buildIntakeMessage() {
     const v = id => document.getElementById(id).value.trim() || '—';
+    const rawDate = document.getElementById('f-timeline').value;
+    const timeline = rawDate
+      ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      : '—';
     return [
       '🛠 FDE Support Request',
       '',
       `Client & size: ${v('f-client')}`,
       `Priority:      ${v('f-priority')}`,
-      `Timeline:      ${v('f-timeline')}`,
+      `Timeline:      ${timeline}`,
       `Potential ARR: ${v('f-arr')}`,
       `Risk:          ${v('f-risk')}`,
       '',
