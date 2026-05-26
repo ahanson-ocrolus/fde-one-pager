@@ -267,7 +267,8 @@
       cursor: pointer;
       transition: opacity 0.15s;
     }
-    .modal-btn:hover { opacity: 0.8; }
+    .modal-btn:hover:not(:disabled) { opacity: 0.8; }
+    .modal-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .modal-cancel { background: #f4f2ed; color: #555; }
     .modal-confirm { background: #1a1a1a; color: #fff; }
 
@@ -587,12 +588,12 @@
 
     <div class="form-field">
       <label class="form-label" for="f-client">Client &amp; size</label>
-      <input class="form-input" id="f-client" type="text" placeholder="Account name, ACV/ARR, contract tier">
+      <input class="form-input" id="f-client" type="text" placeholder="Account name, ACV/ARR, contract tier" oninput="updateIntakeButtons()">
     </div>
 
     <div class="form-field">
       <label class="form-label" for="f-priority">Priority level</label>
-      <select class="form-select" id="f-priority">
+      <select class="form-select" id="f-priority" onchange="updateIntakeButtons()">
         <option value="" disabled selected>Select priority</option>
         <option>Urgent</option>
         <option>High</option>
@@ -602,17 +603,17 @@
 
     <div class="form-field">
       <label class="form-label" for="f-timeline">Timeline</label>
-      <input class="form-input" id="f-timeline" type="date">
+      <input class="form-input" id="f-timeline" type="date" onchange="updateIntakeButtons()">
     </div>
 
     <div class="form-field">
       <label class="form-label" for="f-arr">Potential ARR increase</label>
-      <input class="form-input" id="f-arr" type="text" placeholder="Estimated expansion if the engagement goes well">
+      <input class="form-input" id="f-arr" type="text" placeholder="Estimated expansion if the engagement goes well" oninput="updateIntakeButtons()">
     </div>
 
     <div class="form-field">
       <label class="form-label" for="f-risk">Retention risk</label>
-      <select class="form-select" id="f-risk">
+      <select class="form-select" id="f-risk" onchange="updateIntakeButtons()">
         <option value="" disabled selected>Select risk level</option>
         <option>Yes — churn or downgrade is on the table</option>
         <option>No</option>
@@ -622,13 +623,13 @@
 
     <div class="form-field">
       <label class="form-label" for="f-ask">The ask</label>
-      <textarea class="form-textarea" id="f-ask" placeholder="One line: fix X, unblock Y, scope Z"></textarea>
+      <textarea class="form-textarea" id="f-ask" placeholder="One line: fix X, unblock Y, scope Z" oninput="updateIntakeButtons()"></textarea>
     </div>
 
     <div class="modal-send-row">
       <button class="modal-btn modal-cancel" onclick="closeIntakeModal()">Cancel</button>
-      <button class="modal-btn modal-btn-slack" onclick="sendIntakeViaSlack()">💬 Send via Slack</button>
-      <button class="modal-btn modal-btn-email" onclick="sendIntakeViaEmail()">✉ Send via Email</button>
+      <button class="modal-btn modal-btn-slack" id="intake-slack-btn" onclick="sendIntakeViaSlack()" disabled>💬 Send via Slack</button>
+      <button class="modal-btn modal-btn-email" id="intake-email-btn" onclick="sendIntakeViaEmail()" disabled>✉ Send via Email</button>
     </div>
   </div>
 </div>
@@ -696,6 +697,32 @@
     document.getElementById('intake-modal').classList.remove('open');
   }
 
+  function updateIntakeButtons() {
+    const client   = document.getElementById('f-client').value.trim();
+    const priority = document.getElementById('f-priority').value;
+    const ask      = document.getElementById('f-ask').value.trim();
+    const filled   = !!(client && priority && ask);
+    const urgent   = priority === 'Urgent';
+
+    const slackBtn = document.getElementById('intake-slack-btn');
+    const emailBtn = document.getElementById('intake-email-btn');
+
+    // Show only the channel that matches urgency; show both when no priority picked
+    if (!priority) {
+      slackBtn.style.display = '';
+      emailBtn.style.display = '';
+    } else if (urgent) {
+      slackBtn.style.display = '';
+      emailBtn.style.display = 'none';
+    } else {
+      slackBtn.style.display = 'none';
+      emailBtn.style.display = '';
+    }
+
+    slackBtn.disabled = !filled;
+    emailBtn.disabled = !filled;
+  }
+
   function buildIntakeMessage() {
     const v = id => document.getElementById(id).value.trim() || '—';
     const rawDate = document.getElementById('f-timeline').value;
@@ -720,7 +747,10 @@
     navigator.clipboard.writeText(msg).then(() => {
       closeIntakeModal();
       showToast('Copied! Open Slack and paste.');
-      setTimeout(() => window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1','_blank'), 600);
+      setTimeout(() => {
+        const tab = window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
+        setTimeout(() => { if (tab) tab.close(); }, 1500);
+      }, 600);
     });
   }
 
@@ -754,7 +784,10 @@
     navigator.clipboard.writeText(msg).then(() => {
       closeFeedbackModal();
       showToast('Copied! Paste it in Slack.');
-      setTimeout(() => window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1','_blank'), 600);
+      setTimeout(() => {
+        const tab = window.open('https://slack.com/app_redirect?channel=U0A65V8CGT1', '_blank');
+        setTimeout(() => { if (tab) tab.close(); }, 1500);
+      }, 600);
     });
   }
 
